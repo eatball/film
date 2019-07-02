@@ -1,23 +1,23 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
     <router-view/>
+    <m-footer></m-footer>
   </div>
 </template>
 
 <script>
+import MFooter from "./base/m-footer/m-footer";
 export default {
-  name: 'App'
+  name: 'App',
+  components:{
+    MFooter
+  }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scoped lang="stylus" rel="stylesheet/stylus">
+@import "common/css/index.styl"
+
+
+
 </style>
