@@ -3,10 +3,16 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-
+import axios from 'axios'
 Vue.config.productionTip = false
 
 import 'common/css/index.styl'
+
+Vue.prototype.axios = axios
+
+Vue.filter('setWH',(url,arg)=>{
+    return url.replace(/w\.h/,arg)
+})
 
 
 /* eslint-disable no-new */

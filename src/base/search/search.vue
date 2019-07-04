@@ -2,38 +2,86 @@
     <div class="search">
       <div class="s-box">
         <i class="iconfont icon-search"></i>
-        <input type="text" placeholder="请输入影片名进行搜索">
+        <input type="text" placeholder="请输入影片名进行搜索" v-model="query">
       </div>
-      <ul class="list">
-        <li class="item">
-          <img src="" alt="">
-          <div class="item-info">
-            <h2 class="name">无名鼠辈</h2>
-            <p>观众评<span class="info-score">9.2</span></p>
-            <p>主演：黄渤、成龙</p>
-            <p>今天55家影院放映100场</p>
-          </div>
-          <p class="pay">
-            <span>9.3分</span>
-          </p>
-        </li>
-      </ul>
+      <scroll :data="queryList" class="queryList">
+        <ul class="list">
+          <li class="item" v-for="(item,index) in queryList">
+            <img :src="item.img | setWH('100.120')" alt="">
+            <div class="item-info">
+              <h2 class="name">{{item.nm}}</h2>
+              <p>{{item.enm}}</p>
+              <p>{{item.cat}}</p>
+              <p>{{item.rt}}</p>
+            </div>
+            <p class="pay">
+              <span>{{item.sc}}分</span>
+            </p>
+          </li>
+        </ul>
+      </scroll>
+
     </div>
 </template>
 
 <script>
-    export default {
-        name: "search",
-        data() {
-            return {}
+  import Scroll from "../scroll/scroll";
+  const ERR_OK = 'ok'
+  export default {
+    name: "search",
+    components: {Scroll},
+    data() {
+      return {
+        query:'',
+        queryList:[]
+      }
+    },
+    methods:{
+      cancelRequest(){
+        if(typeof this.source ==='function'){
+          this.source('终止请求')
         }
+      },
+    },
+    watch:{
+      query(newVal){
+        console.log(newVal)
+        // 取消上一次请求
+        this.cancelRequest();
+        this.axios.get('api/searchList?cityId=10&kw='+newVal,{
+          cancelToken: new this.axios.CancelToken( (c) => {
+            this.source = c;
+          })
+        }).then((res)=>{
+            if( res.data.msg===ERR_OK && res.data.data.movies ){
+              this.queryList = res.data.data.movies.list
+            }
+        }).catch((err) => {
+          if (this.axios.isCancel(err)) {
+            console.log('Rquest canceled', err.message); //请求如果被取消，这里是返回取消的message
+          } else {
+            //handle error
+            console.log(err);
+          }
+        })
+      }
     }
+  }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "../../common/css/mixin.styl"
   .search
     padding:20px
+    position: fixed;
+    top: 100px;
+    width: calc(100% - 40px);
+    bottom: 66px;
+    .queryList
+      position: relative
+      height: 100%
+      overflow hidden
+      margin-top:10px
   .s-box
     width: 100%
     height:32px
@@ -58,22 +106,24 @@
     display flex
     align-items center
     height:120px
-    margin-bottom:5px
+    margin:10px 0 15px
     border-bottom:1px solid #eee
+    padding:10px 0 20px
     img
       flex 0 0 100px
       width:100px
+      height:130px
     .item-info
       flex 1
       color:#666
       font-size 14px;
-      margin:0 5px
+      margin:0 10px
       .name
         color:#333
         font-size 16px
         ellipsis(1)
       p
-        margin-top:10px
+        margin-top:15px
         ellipsis(1)
     .pay
       flex 0 0 50px
