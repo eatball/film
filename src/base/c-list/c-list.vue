@@ -1,51 +1,90 @@
 <template>
     <div class="c-list">
-      <ul class="list">
-        <li class="item">
-          <div class="i-left">
-            <p class="title">大地影院（奥东实际店）</p>
-            <p class="add">金州区大连经济技术开发区金州区大连经济技术开发区</p>
-            <p class="tag">
-              <span>小吃</span>
-              <span>折购卡</span>
-              <i>29元起</i>
-            </p>
-          </div>
-          <div class="i-right">
-            143km
-          </div>
-        </li>
-        <li class="item">
-          <div class="i-left">
-            <p class="title">大地影院（奥东实际店）</p>
-            <p class="add">金州区大连经济技术开发区金州区大连经济技术开发区</p>
-            <p class="tag">
-              <span>小吃</span>
-              <span>折购卡</span>
-              <i>29元起</i>
-            </p>
-          </div>
-          <div class="i-right">
-            143km
-          </div>
-        </li>
-      </ul>
+      <scroll :data="cinemaList" class="s-list">
+        <ul class="list">
+          <li class="item" v-for="(item,index) in cinemaList">
+            <div class="i-left">
+              <p class="title">{{item.nm}}</p>
+              <p class="add">{{item.addr}}</p>
+              <p class="tag">
+                <span v-if="card===1" v-for="(card,key) in item.tag" :class="key | formatClass">{{key | formatCrad}}</span>
+                <i>{{item.sellPrice}}元起</i>
+              </p>
+            </div>
+            <div class="i-right">
+              {{item.distance}}
+            </div>
+          </li>
+        </ul>
+      </scroll>
     </div>
 </template>
 
 <script>
-    export default {
-      name: "c-list",
-      data() {
-        return {
-
+  import Scroll from "../scroll/scroll";
+  const ERR_OK = 'ok'
+  export default {
+    name: "c-list",
+    components: {Scroll},
+    data() {
+      return {
+        cinemaList:[]
+      }
+    },
+    mounted() {
+      this.axios.get('api/cinemaList?cityId=10').then((res)=>{
+        console.log(res);
+        if( res.data.msg === ERR_OK ){
+          this.cinemaList = res.data.data.cinemas
+        }
+      })
+    },
+    filters:{
+      formatCrad(key){
+        let data = [
+          {key:'allowRefund',value:'退'},
+          {key:'buyout',value:'买'},
+          {key:'deal',value:'签'},
+          {key:'sell',value:'咖啡'},
+          {key:'snack',value:'小吃'},
+          {key:'endorse',value:'折扣'},
+        ]
+        for (let i = 0; i < data.length ; i++) {
+          if( data[i].key === key ){
+            return data[i].value
+          }
+        }
+      },
+      formatClass(key){
+        let data = [
+          {key:'allowRefund',value:'bl'},
+          {key:'buyout',value:'bl'},
+          {key:'deal',value:'bl'},
+          {key:'sell',value:'or'},
+          {key:'snack',value:'or'},
+          {key:'endorse',value:'or'}
+        ]
+        for (let i = 0; i < data.length ; i++) {
+          if( data[i].key === key ){
+            return data[i].value
+          }
         }
       }
     }
+  }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "../../common/css/mixin.styl"
+  .c-list
+    position: fixed
+    top: 51px;
+    width: 100%;
+    bottom: 46px;
+    .s-list
+      position: relative
+      height: 100%
+      overflow hidden
   .list
     padding:10px
     .item
@@ -70,6 +109,12 @@
             margin-right:5px
             font-size 10px
             border-radius 5px
+            &.bl
+              color:#f60
+              border 1px solid #f60
+            &.or
+              color:#7283da
+              border 1px solid #7283da
           i
             font-style normal
             color:#F35747
