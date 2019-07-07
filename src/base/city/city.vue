@@ -1,18 +1,18 @@
 <template>
   <div class="city-wrap">
-    <scroll :data="cityList" class="city-box" ref="listview">
-
+    <loading v-if="!cityList.length>0 && !hotList.length>0"></loading>
+    <scroll v-else="cityList.length>0" :data="cityList" class="city-box" ref="listview">
         <div class="c-box" ref="city_sort">
           <div class="hot">
             <h2 class="c-title">热门城市</h2>
             <ul class="hot-city">
-              <li class="hot-item" v-if="index<6" v-for="(item,index) in hotList">{{item.nm}}</li>
+              <li class="hot-item" v-if="index<6" v-for="(item,index) in hotList" @tap="setCity(item.nm,item.id)">{{item.nm}}</li>
             </ul>
           </div>
           <div class="all" v-for="(item,index) in cityList">
             <h2 class="c-title" ref="listGroup">{{item.index}}</h2>
             <ul class="all-city">
-              <li class="all-item" v-for="(city,cindex) in item.list">{{city.nm}}</li>
+              <li class="all-item" @tap="setCity(city.nm,city.id)"  v-for="(city,cindex) in item.list">{{city.nm}}</li>
             </ul>
           </div>
         </div>
@@ -30,10 +30,11 @@
 
 <script>
   import Scroll from "../scroll/scroll";
+  import Loading from "../../loading";
   const ERR_OK = 'ok';
   export default {
     name: "city",
-    components: {Scroll},
+    components: {Loading, Scroll},
     data() {
       return {
         hotList:[],
@@ -42,13 +43,23 @@
       }
     },
     mounted() {
-      this.axios.get('api/cityList').then((res)=>{
-        console.log(res);
-        if( res.data.msg === ERR_OK ){
-          let data = res.data.data.cities
-          this.formatCityList(data)
-        }
-      })
+
+      let cityList = window.localStorage.getItem('cityList');
+      let hotList = window.localStorage.getItem('hotList');
+
+      if( cityList && hotList ){
+        this.hotList = JSON.parse(hotList)
+        this.cityList = JSON.parse(cityList)
+      }else {
+        this.axios.get('api/cityList').then((res)=>{
+          if( res.data.msg === ERR_OK ){
+            let data = res.data.data.cities
+            this.formatCityList(data)
+          }
+        })
+      }
+
+
     },
     methods:{
       formatCityList(citys){
@@ -95,12 +106,20 @@
         console.log(cityList)
         this.cityList = cityList
         this.hotList = hotList
+        window.localStorage.setItem('cityList',JSON.stringify(cityList))
+        window.localStorage.setItem('hotList',JSON.stringify(hotList))
       },
       tocity(index){
         var h2 = this.$refs.city_sort.getElementsByTagName('h2')
         window.scrollTop = h2[index].offsetTop
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
         this.currentIndex = index
+      },
+      setCity(nm,id){
+        this.$store.commit('CITY_INFO',{nm,id})
+        this.$router.push('/Movie/nowPlaying')
+        window.localStorage.setItem('cityName',nm)
+        window.localStorage.setItem('cityId',id)
       }
     }
   }

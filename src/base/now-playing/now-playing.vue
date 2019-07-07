@@ -1,8 +1,9 @@
 <template>
   <div class="now-box">
-    <scroll :data="nowPlay" class="nowPlay">
+    <scroll :data="nowPlay" class="nowPlay" :pulldown="pulldown" @pulldown="loadData">
         <ul class="now-playing">
-          <li class="item" v-for="(item,index) in nowPlay">
+          <loading v-if="!nowPlay.length>0"></loading>
+          <li class="item" v-for="(item,index) in nowPlay" @tap="handleToDetail">
             <img :src="item.img | setWH('100.140')" alt="">
             <div class="item-info">
               <h2 class="name"><span>{{item.nm}}</span> <i v-if="item.version" class="iconfont icon-3DIMAX"></i></h2>
@@ -16,6 +17,7 @@
           </li>
         </ul>
     </scroll>
+
   </div>
 
 
@@ -23,23 +25,39 @@
 
 <script>
   import Scroll from "../scroll/scroll";
+  import Loading from "../../loading";
   const ERR_OK = 'ok'
     export default {
       name: "now-playing",
-      components: {Scroll},
+      components: {Loading, Scroll},
       data() {
         return {
-          nowPlay:[]
+          nowPlay:[],
+          pulldown:true,
+          prevCityId:-1
         }
       },
-      mounted() {
-        this.axios.get('api/movieOnInfoList?cityId=10').then((res)=>{
+      activated() {
+
+        let cityId = this.$store.state.city.id
+
+        if( this.prevCityId === cityId )return
+        this.nowPlay = []
+        this.axios.get('api/movieOnInfoList?cityId='+cityId).then((res)=>{
           if( res.data.msg === ERR_OK ){
             this.nowPlay = res.data.data.movieList
-            console.log(this.nowPlay)
+            this.prevCityId = cityId
           }
 
         })
+      },
+      methods:{
+        handleToDetail(){
+          console.log(1)
+        },
+        loadData(){
+          console.log(111)
+        }
       }
     }
 </script>

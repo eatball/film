@@ -1,5 +1,6 @@
 <template>
     <div class="c-list">
+      <loading v-if="!cinemaList.length>0"></loading>
       <scroll :data="cinemaList" class="s-list">
         <ul class="list">
           <li class="item" v-for="(item,index) in cinemaList">
@@ -22,20 +23,25 @@
 
 <script>
   import Scroll from "../scroll/scroll";
+  import Loading from "../../loading";
   const ERR_OK = 'ok'
   export default {
     name: "c-list",
-    components: {Scroll},
+    components: {Loading, Scroll},
     data() {
       return {
-        cinemaList:[]
+        cinemaList:[],
+        prevCityId:'-1'
       }
     },
-    mounted() {
-      this.axios.get('api/cinemaList?cityId=10').then((res)=>{
+    activated() {
+      let cityId = this.$store.state.city.id
+      if( this.prevCityId === cityId )return
+      this.axios.get('api/cinemaList?cityId='+cityId).then((res)=>{
         console.log(res);
         if( res.data.msg === ERR_OK ){
           this.cinemaList = res.data.data.cinemas
+          this.prevCityId = cityId
         }
       })
     },
