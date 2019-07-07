@@ -4,7 +4,7 @@
       <div class="content">
         <div class="c-main">
           <router-link tag="div" to="/Movie/city" class="c-item city">
-            <span>大连</span>
+            <span>{{$store.state.city.nm}}</span>
             <i class="iconfont icon-location"></i>
           </router-link>
           <div class="c-item playing">
@@ -18,20 +18,40 @@
         <keep-alive>
           <router-view></router-view>
         </keep-alive>
-
       </div>
+      <open-box :cityInfo="cityInfo" v-if="isShow"></open-box>
     </div>
 </template>
 
 <script>
     import MHeader from "../../base/m-header/m-header";
+    import OpenBox from "../../base/openBox/open-box";
     export default {
       name: "movie",
       components: {
+        OpenBox,
         MHeader
       },
       data() {
-          return {}
+          return {
+            cityInfo:{},
+            isShow:false
+          }
+      },
+      mounted() {
+        this.axios.get('api/getLocation').then((res)=>{
+          if( res.data.msg === 'ok' ){
+            let data = res.data.data;
+            setTimeout(()=>{
+              if( this.$store.state.city.id == data.id )return
+              this.isShow = true
+            },3000)
+            this.cityInfo = data
+          }
+          console.log(res);
+        })
+
+
       }
     }
 </script>

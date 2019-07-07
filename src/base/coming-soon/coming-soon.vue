@@ -1,5 +1,6 @@
 <template>
   <div class="now-box">
+    <loading v-if="!comList.length>0"></loading>
     <scroll :data="comList" class="nowPlay">
         <ul class="coming">
           <li class="item" v-for="(item, index) in comList">
@@ -21,20 +22,27 @@
 </template>
 
 <script>
+  import Loading from "../../loading";
   const ERR_OK = 'ok'
     import Scroll from "../scroll/scroll";
     export default {
       name: "coming-soon",
-      components: {Scroll},
+      components: {Loading, Scroll},
       data() {
         return {
-          comList:[]
+          comList:[],
+          prevCityId:-1
         }
       },
-      mounted() {
-        this.axios.get('api/movieComingList?cityId=10').then((res)=>{
+      activated() {
+        let cityId = this.$store.state.city.id
+
+        if( this.prevCityId === cityId )return
+        this.comList = []
+        this.axios.get('api/movieComingList?cityId='+cityId).then((res)=>{
           if( res.data.msg === ERR_OK ){
             console.log(res.data);
+            this.prevCityId = cityId
             this.comList = res.data.data.comingList
             console.log(this.comList)
           }

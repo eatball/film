@@ -26,14 +26,16 @@
 
 <script>
   import Scroll from "../scroll/scroll";
+  import Loading from "../../loading";
   const ERR_OK = 'ok'
   export default {
     name: "search",
-    components: {Scroll},
+    components: {Loading, Scroll},
     data() {
       return {
         query:'',
-        queryList:[]
+        queryList:[],
+        cityId:this.$store.state.city.id
       }
     },
     methods:{
@@ -48,7 +50,7 @@
         console.log(newVal)
         // 取消上一次请求
         this.cancelRequest();
-        this.axios.get('api/searchList?cityId=10&kw='+newVal,{
+        this.axios.get('api/searchList?cityId='+this.cityId+'&kw='+newVal,{
           cancelToken: new this.axios.CancelToken( (c) => {
             this.source = c;
           })

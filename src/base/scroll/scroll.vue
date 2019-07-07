@@ -26,6 +26,10 @@
         type: Boolean,
         default: true
       },
+      tap:{
+        type:Boolean,
+        default:true
+      },
       /**
        * 是否开启横向滚动
        */
@@ -91,6 +95,7 @@
         this.scroll = new BScroll(this.$refs.wrapper, {
           probeType: this.probeType,
           click: this.click,
+          tap:this.tap,
           scrollX: this.scrollX
         })
 
