@@ -3,7 +3,7 @@
     <scroll :data="nowPlay" class="nowPlay" :pulldown="pulldown" @pulldown="loadData">
         <ul class="now-playing">
           <loading v-if="!nowPlay.length>0"></loading>
-          <li class="item" v-for="(item,index) in nowPlay" @tap="handleToDetail">
+          <li class="item" v-for="(item,index) in nowPlay" @click="handleToDetail(item)" >
             <img :src="item.img | setWH('100.140')" alt="">
             <div class="item-info">
               <h2 class="name"><span>{{item.nm}}</span> <i v-if="item.version" class="iconfont icon-3DIMAX"></i></h2>
@@ -17,7 +17,6 @@
           </li>
         </ul>
     </scroll>
-
   </div>
 
 
@@ -47,13 +46,14 @@
           if( res.data.msg === ERR_OK ){
             this.nowPlay = res.data.data.movieList
             this.prevCityId = cityId
-          }
-
+          }1144
         })
       },
       methods:{
-        handleToDetail(){
-          console.log(1)
+        handleToDetail(item){
+          this.$router.push({
+            path:`detail/1/${item.id}`
+          })
         },
         loadData(){
           console.log(111)

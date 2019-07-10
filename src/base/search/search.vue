@@ -57,6 +57,8 @@
         }).then((res)=>{
             if( res.data.msg===ERR_OK && res.data.data.movies ){
               this.queryList = res.data.data.movies.list
+            }else{
+              this.queryList = []
             }
         }).catch((err) => {
           if (this.axios.isCancel(err)) {

@@ -117,9 +117,10 @@
       },
       setCity(nm,id){
         this.$store.commit('CITY_INFO',{nm,id})
-        this.$router.push('/Movie/nowPlaying')
+        this.$router.push('/movie/nowPlaying')
         window.localStorage.setItem('cityName',nm)
         window.localStorage.setItem('cityId',id)
+        window.location.reload()
       }
     }
   }
