@@ -73,6 +73,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "../../common/css/mixin.styl"
+.banner-warpper
+  padding:20px
 .fixed
   position: fixed
   width:100%
@@ -90,9 +92,10 @@
   top: 0
   left: 0
   width 100%
-  min-height: 100%
+  min-height:100%
   z-index 100
   background #fff
+  overflow hidden
   .d-top
     width:calc(100% - 30px)
     height:140px
