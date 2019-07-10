@@ -1,14 +1,14 @@
 <template>
   <div class="footer">
-    <router-link tag="div" to="/Movie" class="f-item">
+    <router-link tag="div" to="/movie" class="f-item">
       <i class="iconfont icon-dianying"></i>
       <p>电影</p>
     </router-link>
-    <router-link tag="div" to="/Cinema" class="f-item">
+    <router-link tag="div" to="/cinema" class="f-item">
       <i class="iconfont icon-dianyingyuan"></i>
       <p>影院</p>
     </router-link>
-    <router-link tag="div" to="/My" class="f-item">
+    <router-link tag="div" to="/my" class="f-item">
       <i class="iconfont icon-wodedangxuan"></i>
       <p>我的</p>
     </router-link>

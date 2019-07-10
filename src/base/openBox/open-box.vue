@@ -46,6 +46,7 @@
     width: 100%
     height: 100%
     background rgba(0,0,0,.5)
+    z-index 99999
     .open
       position:absolute;
       top:0;
@@ -57,7 +58,7 @@
       max-width 500px
       border-radius 10px
       background #fff
-      height:138px
+      height:128px
       overflow hidden
       .title
         height:40px
@@ -67,8 +68,8 @@
         font-size 14px
         border-bottom:1px solid #eee;
       .city
-        height:60px;
-        line-height 60px
+        height:50px;
+        line-height 50px
         color:#333;
         font-size:14px;
         text-align center

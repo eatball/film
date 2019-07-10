@@ -3,7 +3,7 @@
     <loading v-if="!comList.length>0"></loading>
     <scroll :data="comList" class="nowPlay">
         <ul class="coming">
-          <li class="item" v-for="(item, index) in comList">
+          <li class="item" v-for="(item, index) in comList" @click="handleToDetail(item)">
             <img :src="item.img | setWH('100.140')" alt="">
             <div class="item-info">
               <h2 class="name"><span>{{item.nm}}</span> <i v-if="item.version" class="iconfont icon-3DIMAX"></i></h2>
@@ -48,6 +48,13 @@
           }
 
         })
+      },
+      methods:{
+        handleToDetail(item){
+          this.$router.push({
+            path:`detail/2/${item.id}`
+          })
+        },
       }
     }
 </script>

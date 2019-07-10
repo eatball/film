@@ -3,15 +3,15 @@
       <m-header></m-header>
       <div class="content">
         <div class="c-main">
-          <router-link tag="div" to="/Movie/city" class="c-item city">
+          <router-link tag="div" to="/movie/city" class="c-item city">
             <span>{{$store.state.city.nm}}</span>
             <i class="iconfont icon-location"></i>
           </router-link>
           <div class="c-item playing">
-            <router-link tag="span" to="/Movie/nowPlaying" class="play">正在热映</router-link>
-            <router-link tag="span" to="/Movie/comingSoon" class="play">即将上映</router-link>
+            <router-link tag="span" to="/movie/nowPlaying" class="play">正在热映</router-link>
+            <router-link tag="span" to="/movie/comingSoon" class="play">即将上映</router-link>
           </div>
-          <router-link tag="div" to="/Movie/search" class="c-item search">
+          <router-link tag="div" to="/movie/search" class="c-item search">
             <i class="iconfont icon-search-active"></i>
           </router-link>
         </div>
@@ -19,6 +19,7 @@
           <router-view></router-view>
         </keep-alive>
       </div>
+      <router-view name="detail"></router-view>
       <open-box :cityInfo="cityInfo" v-if="isShow"></open-box>
     </div>
 </template>
@@ -38,20 +39,23 @@
             isShow:false
           }
       },
+      methods:{
+        getCity(){
+          this.axios.get('api/getLocation').then((res)=>{
+            if( res.data.msg === 'ok' ){
+              let data = res.data.data;
+              setTimeout(()=>{
+                if( this.$store.state.city.id == data.id )return
+                this.isShow = true
+              },3000)
+              this.cityInfo = data
+            }
+            console.log(res);
+          })
+        }
+      },
       mounted() {
-        this.axios.get('api/getLocation').then((res)=>{
-          if( res.data.msg === 'ok' ){
-            let data = res.data.data;
-            setTimeout(()=>{
-              if( this.$store.state.city.id == data.id )return
-              this.isShow = true
-            },3000)
-            this.cityInfo = data
-          }
-          console.log(res);
-        })
-
-
+        this.getCity()
       }
     }
 </script>
